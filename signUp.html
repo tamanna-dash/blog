@@ -1,0 +1,107 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="signUp.css">
+</head>
+
+<body>
+    <div class="login-box">
+        <h1>SIGN IN</h1>
+        <div class="textbox">
+            <i class="fa fa-user" aria-hidden="true"></i>
+            <input type="text" id="nameText" placeholder="Full name" />
+        </div>
+        <div class="textbox">
+            <i class="fa fa-envelope" aria-hidden="true"></i>
+            <input type='email' id="emailText" placeholder="Email" />
+        </div>
+        <div class="textbox">
+            <i class="fa fa-key" aria-hidden="true"></i>
+            <input type="password" id="passText" placeholder="Password" />
+        </div>
+        <div class="textbox">
+            <i class="fa fa-phone" aria-hidden="true"></i>
+            <input type="tel" id="phnText" placeholder="Phone Number" />
+        </div>
+        <div class="textbox1 ">
+            <i class="fa fa-venus-mars" aria-hidden="true"></i>
+            <div> Gender:</div>
+            <div class="radio radio-item"> 
+                <label for="male">Male</label>
+                <input type="radio" class="radioBtn" id="genText" name="gender" value="1"><br>
+            </div>
+            <div class="radio radio-item">
+                <label for="female">Female</label>
+                <input type="radio" class="radioBtn" id="genText" name="gender" value="2"><br>
+            </div>
+            <div class="radio radio-item">
+                <label for="other">Other</label>
+                <input type="radio" class="radioBtn" id="genText" name="gender" value="3">
+            </div>
+        </div>
+        <div id="buttonDiv"><button class="btn" onclick='login()'>Show</button></div><br />
+        <div>Already have an account? <a style="color: orange; text-decoration: none" href='login.html'> LOGIN!</a></div>
+        <font id="messageText"></font>
+
+        <script>
+            function login() {
+                var nameText = document.getElementById("nameText");
+                var emailText = document.getElementById("emailText");
+                var passText = document.getElementById("passText");
+                var phnText = document.getElementById("phnText");
+                var genText = document.getElementById("genText");
+                var buttonDiv = document.getElementById("buttonDiv");
+                var messageText = document.getElementById("messageText");
+
+                var name = nameText.value;
+                var email = emailText.value;
+                var pass = passText.value;
+                var phn = phnText.value;
+                var gender = genText.value;
+
+                if (email === '') {
+                    messageText.color = 'red';
+                    messageText.innerHTML = 'Email must not be empty';
+                } else if (pass === '') {
+                    messageText.color = 'red';
+                    messageText.innerHTML = 'Password must Not be empty';
+                } else {
+                    messageText.innerHTML = '';
+                    buttonDiv.innerHTML = 'Please wait';
+                    var loginRespnse = fetch(`https://flutter.smarttersstudio.com/test/signup.php?name=${name}&email=${email}&phone=${phn}&gender=${gender}&password=${pass}`);
+                    loginRespnse.then(
+                        response => {
+                            response.text().then(
+                                text => {
+                                    // We Got our Response
+                                    var jsonFormattedData = JSON.parse(text);
+
+                                    var { result, reason } = jsonFormattedData;
+
+                                    if (result) {
+                                        messageText.color = 'green';
+                                        messageText.innerHTML = 'Signed in Successfully';
+                                    } else {
+                                        messageText.color = 'red';
+                                        messageText.innerHTML = reason;
+                                    }
+                                }
+                            )
+                        }
+                    ).catch(
+                        error => {
+                            messageText.color = 'red';
+                            messageText.innerHTML = error;
+                        }
+                    ).finally(
+                        () => {
+                            buttonDiv.innerHTML = "<button class='btn' onclick = 'login()' >Show</button>";
+                        }
+                    );
+                }
+            }
+        </script>
+    </div>
+</body>
+
+</html>

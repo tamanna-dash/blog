@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+
+<body onload="load()">
+
+    <ul>
+        <li><a  href="dashboard.html">My Blog</a></li>
+        <li style="float:right"><a href="profile.html">Profile</a></li>
+        <li style="float:right"><a href="addpost.html">Add Posts</a></li>
+        <li class="active" style="float:right"><a href="myposts.html">My Posts</a></li>
+    </ul>
+
+    <div id="body" class="a">
+        <i class="fa fa-spinner fa-pulse fa-5x fa-fw spinner"></i>
+        <span class="sr-only">Loading...</span>
+    </div>
+    <script>
+        function load() {
+            var body = document.getElementById('body');
+            var id = localStorage.getItem('login');
+            if (!id) {
+                window.location.assign('b.html');
+            } else {
+                fetch(`https://flutter.smarttersstudio.com/test/getMyPosts.php?id=${id}`)
+                    .then(
+                        (res) => {
+                            res.text().then(
+                                response => {
+                                    var arr = JSON.parse(response);
+                                    var demoTable = '';
+                                    arr.forEach(element => {
+                                        demoTable += `<div class="w3-container container">
+                                                <h2>${element.title}</h2
+                                                <div class="w3-card-4" style="width:50%;">
+                                                    <header class="w3-container w3-orange">
+                                                    <h1>${element.name}</h1>
+                                                    </header>
+
+                                                    <div class="w3-container">
+                                                    <p>${element.description}</p>
+                                                    </div>
+
+                                                    <footer class="w3-container w3-orange">
+                                                    <h5>${element.timestamp}</h5>
+                                                    </footer>
+                                                </div>
+                                            </div>`;
+                                    });
+                                    body.innerHTML = demoTable;
+                                }
+                            )
+                        }
+                    ).catch(
+                        e => body.innerHTML = e.toString()
+                    )
+            }
+        }
+    </script>
+</body>
+
+</html>

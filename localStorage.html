@@ -1,0 +1,12 @@
+<html>
+    <body id = "b" onload="load()">
+        <script>
+            function load(){
+                var name = localStorage.getItem('myName');
+                document.getElementById("b").innerHTML = name;
+                localStorage.setItem('myName','tamanna');
+            }
+        </script>
+    </body>
+
+</html>

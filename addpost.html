@@ -1,0 +1,72 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="addposts.css">
+    <title>Add A Post</title>
+</head>
+
+<body onload="onload()">
+    <ul>
+        <li><a  href="dashboard.html">My Blog</a></li>
+        <li style="float:right"><a href="profile.html">Profile</a></li>
+        <li class="active" style="float:right"><a href="addpost.html">Add Posts</a></li>
+        <li style="float:right"><a href="myposts.html">My Posts</a></li>
+    </ul>
+    <div class="login-box">
+        <div class="textbox">
+            <i class="fa fa-pencil" aria-hidden="true"></i>
+            <input type="text" placeholder="Add your title" id="titleText" /><br />
+        </div>
+        <div class="textbox">
+            <i class="fa fa-align-justify" aria-hidden="true"></i>
+            <input type="text" placeholder="Add your description" id="bodyText"></input><br />
+        </div>
+
+        <font id="messageText"></font>
+
+        <div id="div">
+            <button class="btn" id="addPostButton" onclick="addPost()">Add Post</button>
+        </div>
+
+
+        <script>
+            var titletext = document.getElementById('titleText');
+            var bodyText = document.getElementById('bodyText');
+            var messageText = document.getElementById('messageText');
+            var buttonDiv = document.getElementById('div');
+            var id;
+            function addPost() {
+                var title = titleText.value;
+                var body = bodyText.value;
+                messageText.innerHTML = '';
+                if (title === '') {
+                    messageText.color = 'red';
+                    messageText.innerHTML = 'Title must not be empty';
+                } else if (body === '') {
+                    messageText.color = 'red';
+                    messageText.innerHTML = 'Body must not be empty';
+                } else {
+                    buttonDiv.innerHTML = 'Please Wait';
+                    fetch(`https://flutter.smarttersstudio.com/test/addPost.php?id=${id}&title=${title}&body=${body}`)
+                        .then(
+                            e => {
+                                alert('Post added Successfully');
+                                window.location.assign('myposts.html');
+                            }
+                        ).finally(
+                            () => buttonDiv.innerHTML = '<button id = "addPostButton" onclick="addPost()">Add Post</button>'
+                        );
+                }
+            }
+            function onload() {
+                id = localStorage.getItem('login');
+                if (!id) {
+                    alert('You must login first');
+                    window.location.assign('b.html');
+                }
+            }
+        </script>
+    </div>
+</body>
+
+</html>

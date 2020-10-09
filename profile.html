@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="profile.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+
+<body onload="onLoad()">
+    <ul>
+        <li><a  href="dashboard.html">My Blog</a></li>
+        <li class="active" style="float:right"><a href="profile.html">Profile</a></li>
+        <li  style="float:right"><a href="addpost.html">Add Posts</a></li>
+        <li style="float:right"><a href="myposts.html">My Posts</a></li>
+    </ul>
+    <div class="card-container">
+        <i class="fa fa-user-circle fa-5x user" aria-hidden="true"></i>
+        <div id="b" class="b">
+            <i class="fa fa-spinner fa-pulse fa-4x fa-fw"></i>
+            <span class="sr-only">Loading...</span>
+        </div>
+        <button class="btn" onclick="logout()">Logout</button>
+    </div>
+    <script>
+        function logout() {
+            localStorage.removeItem('login');
+            window.location.assign('login.html');
+        }
+        function onLoad() {
+            var body = document.getElementById("b");
+            var id = localStorage.getItem('login');
+            if (!id) {
+                window.location.assign('login.html');
+            } else {
+                fetch(`https://flutter.smarttersstudio.com/test/profile.php?id=${id}`)
+                    .then(
+                        (res) => {
+                            res.text().then(
+                                response => {
+                                    var profileData = JSON.parse(response);
+                                    var demoTable = '<table>';
+                                    Object.keys(profileData).forEach(
+                                        key => {
+                                            return demoTable += `<tr> <td> ${key.toUpperCase()}</td><td>${profileData[key]}</td></tr>`
+                                        }
+                                    );
+                                    demoTable += '</table>';
+                                    body.innerHTML = demoTable;
+                                }
+                            );
+                        }
+                    ).catch(
+                        (e) => {
+                            body.innerHTML = e.toString();
+                        }
+                    );
+            }
+        }
+    </script>
+</body>
+
+</html>

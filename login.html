@@ -1,0 +1,86 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="login.css">
+</head>
+
+<body onload="onLoad()">
+    <div class="login-box">
+        <h1>LOGIN</h1>
+        <div class="textbox">
+            <i class="fa fa-envelope" aria-hidden="true"></i>
+            <input type='email' id="emailText" placeholder="Email" />
+        </div>
+        <div class="textbox">
+            <i class="fa fa-key" aria-hidden="true"></i>
+            <input type="password" id="passText" placeholder="Password" />
+        </div>
+        <div id="buttonDiv"><button class="btn" onclick='login()'>Show</button></div><br />
+        <div>Don't have an account? <a style="color: orange; text-decoration: none" href='signUp.html'> SIGN UP!</a>
+        </div>
+        <font id="messageText"></font>
+
+        <script>
+            function onLoad() {
+                var login = localStorage.getItem('login');
+                if (login) {
+                    window.location.assign('profile.html');
+                }
+            }
+            function login() {
+                var emailText = document.getElementById("emailText");
+                var passText = document.getElementById("passText");
+                var buttonDiv = document.getElementById("buttonDiv");
+                var messageText = document.getElementById("messageText");
+
+                var email = emailText.value;
+                var pass = passText.value;
+
+                if (email === '') {
+                    messageText.color = 'red';
+                    messageText.innerHTML = 'Email must not be empty';
+                } else if (pass === '') {
+                    messageText.color = 'red';
+                    messageText.innerHTML = 'Password must Not be empty';
+                } else {
+                    messageText.innerHTML = '';
+                    buttonDiv.innerHTML = 'Please wait';
+                    var loginRespnse = fetch(`https://flutter.smarttersstudio.com/test/login.php?user=${email}&pass=${pass}`);
+                    loginRespnse.then(
+                        response => {
+                            response.text().then(
+                                text => {
+                                    // We Got our Response
+                                    var jsonFormattedData = JSON.parse(text);
+
+                                    var { result, reason, id } = jsonFormattedData;
+
+                                    console.log(result);
+                                    console.log(jsonFormattedData);
+                                    if (result) {
+                                        localStorage.setItem('login', id);
+                                        window.location.assign('profile.html');
+                                    } else {
+                                        messageText.color = 'red';
+                                        messageText.innerHTML = reason;
+                                    }
+                                }
+                            )
+                        }
+                    ).catch(
+                        error => {
+                            messageText.color = 'red';
+                            messageText.innerHTML = error;
+                        }
+                    ).finally(
+                        () => {
+                            buttonDiv.innerHTML = "<button class='btn' onclick = 'login()' >Show</button>";
+                        }
+                    );
+                }
+            }
+        </script>
+    </div>
+</body>
+
+</html>
